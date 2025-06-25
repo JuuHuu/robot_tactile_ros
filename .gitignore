@@ -1,0 +1,30 @@
+# ROS 2 colcon build directories
+build/
+install/
+log/
+
+# Python cache and artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.eggs/
+*.so
+
+# Environment and editor configs
+.env
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Mac OS and general system files
+.DS_Store
+Thumbs.db
+
+# Conda or virtualenv environments
+*.env/
+.env/
+.venv/
+venv/
