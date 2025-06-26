@@ -17,6 +17,11 @@ from gelsight_publisher.utilities.reconstruction import Reconstruction3D
 from sensor_msgs.msg import PointCloud2, PointField
 import sensor_msgs_py.point_cloud2 as pc2
 
+from rclpy.node import Node
+from geometry_msgs.msg import TransformStamped
+from tf2_ros.static_transform_broadcaster import StaticTransformBroadcaster
+from tf_transformations import quaternion_from_euler
+
 class DepthReconstructionNode(Node):
     def __init__(self, config):
         super().__init__('depth_reconstruction_node')
@@ -41,6 +46,29 @@ class DepthReconstructionNode(Node):
         self.pixel_mm_scale = config.pixel_mm_scale  # e.g. 0.0634 (mm/pixel)
         self.image_buffer = []
         self.buffer_size = 3  # You can adjust this
+        
+        # tf from link7 to tactile
+        self.tfbroadcaster = StaticTransformBroadcaster(self)
+        static_tf = TransformStamped()
+        static_tf.header.stamp = self.get_clock().now().to_msg()
+        static_tf.header.frame_id = 'link7'           # parent frame
+        static_tf.child_frame_id = 'tactile_sensor'   # child frame
+        static_tf.transform.translation.x = 0.0
+        static_tf.transform.translation.y = 0.0
+        static_tf.transform.translation.z = 0.065
+
+        # Set rotation (roll, pitch, yaw in radians)
+        quat = quaternion_from_euler(0.0, 0.0, -3.14/2)  # adjust if needed
+        static_tf.transform.rotation.x = quat[0]
+        static_tf.transform.rotation.y = quat[1]
+        static_tf.transform.rotation.z = quat[2]
+        static_tf.transform.rotation.w = quat[3]
+
+        # Broadcast the transform
+        self.tfbroadcaster.sendTransform(static_tf)
+        self.mm_to_m = 0.001
+        # self.mm_to_m = 1
+        
     
 
     def image_callback(self, msg):
@@ -93,9 +121,9 @@ class DepthReconstructionNode(Node):
         xx, yy = np.meshgrid(x_range, y_range)
 
         # Flatten and center X and Y
-        x_flat = (xx - w / 2).flatten() * scale
-        y_flat = (yy - h / 2).flatten() * scale
-        z_flat = depth_norm.flatten()
+        x_flat = (xx - w / 2).flatten() * scale * self.mm_to_m 
+        y_flat = (yy - h / 2).flatten() * scale * self.mm_to_m 
+        z_flat = - depth_norm.flatten() * self.mm_to_m 
 
         # Filter out NaNs
         valid_mask = ~np.isnan(z_flat)
@@ -113,7 +141,7 @@ class DepthReconstructionNode(Node):
         ]
         header = Header()
         header.stamp = self.get_clock().now().to_msg()
-        header.frame_id = 'map'  # Change if needed
+        header.frame_id = 'tactile_sensor'  # Change if needed
 
         pc_msg = pc2.create_cloud(header, fields, points.astype(np.float32))
         self.pcd_pub.publish(pc_msg)

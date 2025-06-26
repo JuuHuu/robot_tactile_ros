@@ -38,6 +38,8 @@ default_config = ConfigModel(
     use_gpu=False,
     max_fps=25, 
     pixel_mm_scale=0.0634
+    # pixel_mm_scale=0.01
+    
 )
 
 
