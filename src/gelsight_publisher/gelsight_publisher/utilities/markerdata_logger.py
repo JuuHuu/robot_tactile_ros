@@ -1,6 +1,6 @@
 import numpy as np
 from datetime import datetime
-from utilities.logger import log_message
+from gelsight_publisher.utilities.logger import log_message
 import os
 
 

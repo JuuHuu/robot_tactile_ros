@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 from pydantic import BaseModel, ValidationError
 from gelsight_publisher.utilities.logger import log_message
-
+from ament_index_python.packages import get_package_share_directory
 
 class ConfigModel(BaseModel):
     default_camera_index: int
@@ -20,7 +20,7 @@ class ConfigModel(BaseModel):
     cmap_in_BGR_format: bool
     use_gpu: bool
     max_fps: int
-
+    pixel_mm_scale: float
 
 default_config = ConfigModel(
     default_camera_index=0,
@@ -32,11 +32,12 @@ default_config = ConfigModel(
     pointcloud_enabled=True,
     pointcloud_window_scale=3,
     cv_image_stack_scale=1.5,
-    nn_model_path="./models/nnmini.pt",
-    cmap_txt_path="./cmap.txt",
+    nn_model_path="/home/juu/Documents/robot_tactile_ros/src/gelsight_publisher/gelsight_publisher/utilities/nnmini.pt",
+    cmap_txt_path="/home/juu/Documents/robot_tactile_ros/src/gelsight_publisher/gelsight_publisher/utilities/cmap.txt",
     cmap_in_BGR_format=True,
     use_gpu=False,
     max_fps=25, 
+    pixel_mm_scale=0.0634
 )
 
 

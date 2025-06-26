@@ -14,7 +14,7 @@ class GelSightImagePublisher(Node):
         self.config = config
         self.bridge = CvBridge()
 
-        self.publisher = self.create_publisher(Image, 'gelsight/image', 10)
+        self.publisher = self.create_publisher(Image, 'gelsight/image', 1)
 
         self.cam = GelSightMini(config.camera_width, config.camera_height)
         self.cam.select_device(config.default_camera_index)
@@ -27,8 +27,8 @@ class GelSightImagePublisher(Node):
         if frame is None:
             return
 
-        # frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        msg = self.bridge.cv2_to_imgmsg(frame, encoding='rgb8')
+        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        msg = self.bridge.cv2_to_imgmsg(frame_rgb, encoding='rgb8')
         msg.header = Header()
         msg.header.stamp = self.get_clock().now().to_msg()
         self.publisher.publish(msg)
@@ -43,7 +43,7 @@ def main(args=None):
     args = parser.parse_args()
 
     gs_config = GSConfig(args.gs_config)
-    gs_config.config.pointcloud_enabled = False
+    # gs_config.config.pointcloud_enabled = False
 
     rclpy.init()
     node = GelSightImagePublisher(gs_config.config)

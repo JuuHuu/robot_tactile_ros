@@ -4,9 +4,9 @@ import torch.nn.functional as F
 import numpy as np
 import os
 import cv2
-from utilities.poisson_solver import poisson_dct_neumaan
-from utilities.image_processing import mask_from_range, remove_masked_area
-from utilities.logger import log_message
+from gelsight_publisher.utilities.poisson_solver import poisson_dct_neumaan
+from gelsight_publisher.utilities.image_processing import mask_from_range, remove_masked_area
+from gelsight_publisher.utilities.logger import log_message
 from typing import Optional
 
 

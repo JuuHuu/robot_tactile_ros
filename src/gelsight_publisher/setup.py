@@ -29,6 +29,7 @@ setup(
     entry_points={
         'console_scripts': [
             'gelsight_image_publisher = gelsight_publisher.image_publisher:main',
+            'depth_reconstruction_node = gelsight_publisher.depth_reconstruction:main',
         ],
     },
 )
