@@ -47,27 +47,29 @@ class DepthReconstructionNode(Node):
         self.image_buffer = []
         self.buffer_size = 3  # You can adjust this
         
-        # tf from link7 to tactile
-        self.tfbroadcaster = StaticTransformBroadcaster(self)
-        static_tf = TransformStamped()
-        static_tf.header.stamp = self.get_clock().now().to_msg()
-        static_tf.header.frame_id = 'link7'           # parent frame
-        static_tf.child_frame_id = 'tactile_sensor'   # child frame
-        static_tf.transform.translation.x = 0.0
-        static_tf.transform.translation.y = 0.0
-        static_tf.transform.translation.z = 0.065
+        # # tf from link7 to tactile
+        # self.tfbroadcaster = StaticTransformBroadcaster(self)
+        # static_tf = TransformStamped()
+        # static_tf.header.stamp = self.get_clock().now().to_msg()
+        # static_tf.header.frame_id = 'link7'           # parent frame
+        # static_tf.child_frame_id = 'tactile_sensor'   # child frame
+        # static_tf.transform.translation.x = 0.0
+        # static_tf.transform.translation.y = 0.0
+        # static_tf.transform.translation.z = 0.065
 
-        # Set rotation (roll, pitch, yaw in radians)
-        quat = quaternion_from_euler(0.0, 0.0, -3.14/2)  # adjust if needed
-        static_tf.transform.rotation.x = quat[0]
-        static_tf.transform.rotation.y = quat[1]
-        static_tf.transform.rotation.z = quat[2]
-        static_tf.transform.rotation.w = quat[3]
+        # # Set rotation (roll, pitch, yaw in radians)
+        # quat = quaternion_from_euler(0.0, 0.0, -3.14/2)  # adjust if needed
+        # static_tf.transform.rotation.x = quat[0]
+        # static_tf.transform.rotation.y = quat[1]
+        # static_tf.transform.rotation.z = quat[2]
+        # static_tf.transform.rotation.w = quat[3]
 
-        # Broadcast the transform
-        self.tfbroadcaster.sendTransform(static_tf)
+        # # Broadcast the transform
+        # self.tfbroadcaster.sendTransform(static_tf)
+        
+        
         self.mm_to_m = 0.001
-        # self.mm_to_m = 1
+        # # self.mm_to_m = 1
         
     
 
@@ -141,7 +143,7 @@ class DepthReconstructionNode(Node):
         ]
         header = Header()
         header.stamp = self.get_clock().now().to_msg()
-        header.frame_id = 'tactile_sensor'  # Change if needed
+        header.frame_id = 'link_eef'  # Change if needed
 
         pc_msg = pc2.create_cloud(header, fields, points.astype(np.float32))
         self.pcd_pub.publish(pc_msg)
